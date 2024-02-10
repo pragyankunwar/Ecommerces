@@ -1,0 +1,110 @@
+{% extends 'base_layout.html' %} {% load static %}{% block titlesection %}
+{% if request.GET.query %}
+<title>{{ request.GET.query }}</title> 
+{% elif request.GET.genre %}
+<title>{{ request.GET.genre }}</title> 
+{% else %}
+<title>All Books</title>
+{% endif %}
+{% endblock %}
+
+
+
+{% block css %}
+<style>
+ 
+
+.checked {
+  color: orange;
+}
+
+</style>
+{% endblock %}
+
+{% block contents %}
+
+<ul id="slide-out" class="sidenav sidenav-fixed" style="margin-top:64px;">
+  <li style="margin-left: 30px;"><h4>  <i class="material-icons">display_settings</i> Genre</h4></a>
+  <li><a href="/book?genre=Fiction"style="font-size: 18px;">Fiction</a></li>
+  <li><a href="/book?genre=Non-Fiction"style="font-size: 18px;">Non-Fiction</a></li>
+  <li><a href="/book?genre=Novel"style="font-size: 18px;">Novel</a></li>
+  <li><a href="/book?genre=Fantasy"style="font-size: 18px;">Fantasy</a></li>
+  <li><a href="/book?genre=Biography"style="font-size: 18px;">Biography</a></li>
+  <li><a href="/book?genre=Poetry"style="font-size: 18px;">Poetry</a></li>
+</ul>
+<a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+      
+
+{% if request.GET.query %}
+<h3 style="margin-left: 360px;margin-top: -10px;">Search: {{ request.GET.query }}</h3>
+<h5 style="margin-left: 360px;margin-top: -10px;">{{ number_of_books }} Results found</h6>
+  {% elif request.GET.genre %}
+  <h3 style="margin-left: 360px;margin-top: -10px;">Genre: {{ request.GET.genre }}</h3>
+<h5 style="margin-left: 360px;margin-top: -10px;">{{ number_of_books }} Results found</h6>
+{% else %}
+<h3 style="margin-left: 360px;margin-top: -10px;">Explore Nepali Books</h3>
+{% endif %}
+
+<br>
+<br>
+<br>
+<form method="GET" action="{% url 'BookList' %}">
+  <div class="search" style="margin-left: 24px;">
+    <input type="text" name="query" class="searchbox browser-default" placeholder=" Search Nepali Books here" style="font-size: 15px; padding-left: 30px; font-family: Roboto 2.0;">
+    <button type="submit" class="searchbtn"><i class="fas fa-search"></i></button>
+  </div>
+</form>
+
+<br> <br> <br>
+
+<div class="width_content_narrow">
+    <div style="margin-left: 210px;">
+        {% for book in object_list %}
+   <div class="row">
+    <div class="col s12 l12">
+  
+      <div class="card horizontal small">
+        <div class="card-image">
+         <a href="/book/{{ book.slug }}">{% if book.image %}<img src="{{ book.image }}">{% else %} <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1618241431i/57721484.jpg"></a>  {% endif %}
+        
+        </div>
+        <div class="card-stacked">
+          <div class="card-content">
+            <a href="/book/{{ book.slug }}"><h3 style="color: black;"> {{ book.nepali_name }}  ({{ book.english_name }})
+            </h3></a>
+            <p style="margin-top: -9px;">By {{ book.english_author }}</p>
+            <div style="margin-top: 7px;">
+              <span style="font-weight: 600; font-size: large;"> Rating &nbsp;</span>
+
+                
+                <span class="fa fa-star {% if book.avg_rating >= 1 %} checked {% endif %}" "></span>
+                <span class="fa fa-star {% if book.avg_rating >= 2 %} checked {% endif %}""></span>
+                <span class="fa fa-star {% if book.avg_rating >= 3 %} checked {% endif %}""></span>
+                <span class="fa fa-star {% if book.avg_rating >= 4 %} checked {% endif %}""></span>
+                <span class="fa fa-star {% if book.avg_rating >= 5 %} checked {% endif %}""></span> 
+                <span style="font-weight: 600; font-size: large;"> &nbsp; {{ book.avg_rating }} of 5</span>
+              
+              
+            </div>
+            <span style="font-weight: 600; font-size: large;"> Publication &nbsp;<span style="color: brown;"> {{ book.Publisher }}</span></span>
+  
+             
+          </div>
+          <div class="card-action">
+            <a class="hell white-text waves-effect waves-light btn" href="#"><i class="material-icons left">calendar_month</i>{% if book.year_published %} {{book.year_published}} {% else %} 2000 {% endif %}</a> &nbsp; &nbsp; &nbsp;
+            
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  
+  {% endfor %}
+  
+  
+   </div>
+  </div>
+
+
+{% endblock %}
